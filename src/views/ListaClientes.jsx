@@ -5,6 +5,9 @@ import Dialog from '@mui/material/Dialog';
 import { useEffect } from 'react';
 import {
   Box,
+  CircularProgress,
+  Container,
+  IconButton,
   Table,
   TableBody,
   TableCell,
@@ -14,6 +17,9 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 function ListaClientes() {
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
@@ -55,48 +61,52 @@ function ListaClientes() {
 
   return (
     <>
-      <Button
-        variant='contained'
-        onClick={handleOpen}
-      >
-        Ingresar nuevo Cliente
-      </Button>
+      <Container>
+        <Typography
+          variant='h4'
+          sx={{ mt: 2 }}
+        >
+          Lista de Clientes
+        </Typography>
+        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
+          <TextField
+            label='Buscar por apellido o ciudad'
+            variant='outlined'
+            value={buscar}
+            onChange={(e) => setBuscar(e.target.value)}
+            sx={{ m: 2, width: '75%' }}
+          />
+          <Button
+            variant='contained'
+            onClick={handleOpen}
+            startIcon={<PersonAddIcon />}
+            size='large'
+            sx={{ m: 2, width: '25%' }}
+          >
+            {/* Ingresar nuevo Cliente */}
+          </Button>
 
-      <Dialog
-        open={mostrarFormulario}
-        onClose={handleClose}
-        maxWidth='md'
-        fullWidth
-        PaperProps={{ sx: { borderRadius: 4 } }}
-      >
-        <ModuloC
-          onCerrar={handleClose}
-          onSuccess={handleClose}
-        />
-      </Dialog>
-
-      <section>
-        <Typography variant='h4'>Lista de Clientes</Typography>
-        <TextField
-          label='Buscar por apellido o ciudad'
-          variant='outlined'
-          value={buscar}
-          onChange={(e) => setBuscar(e.target.value)}
-          sx={{ m: 2 }}
-        />
-
+          <Dialog
+            open={mostrarFormulario}
+            onClose={handleClose}
+            maxWidth='md'
+            fullWidth
+            PaperProps={{ sx: { borderRadius: 4 } }}
+          >
+            <ModuloC
+              onCerrar={handleClose}
+              onSuccess={handleClose}
+            />
+          </Dialog>
+        </Box>
+      </Container>
+      <Container>
         <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
           {estado === 'carga' && (
-            <div style={{ textAlign: 'center', marginTop: '40px' }}>
-              {/* <Spinner
-                animation='border'
-                role='status'
-              /> */}
-
-              <p style={{ color: '#aaa', marginTop: 10 }}>
-                Cargando clientes...
-              </p>
-            </div>
+            <Typography style={{ color: '#aaa', marginTop: 10 }}>
+              <CircularProgress />
+              Cargando clientes...
+            </Typography>
           )}
         </Box>
 
@@ -124,8 +134,24 @@ function ListaClientes() {
                       <TableCell>{cliente.email}</TableCell>
                       <TableCell>{cliente.phone}</TableCell>
                       <TableCell>
-                        <button>Editar</button>
-                        <button>Eliminar</button>
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            gap: 1,
+                            justifyContent: 'center',
+                          }}
+                        >
+                          <Button
+                            variant='contained'
+                            startIcon={<EditIcon />}
+                            color='warning'
+                          ></Button>
+                          <Button
+                            variant='contained'
+                            startIcon={<DeleteIcon />}
+                            color='error'
+                          ></Button>
+                        </Box>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -134,7 +160,7 @@ function ListaClientes() {
             </TableContainer>
           )}
         </Box>
-      </section>
+      </Container>
     </>
   );
 }
