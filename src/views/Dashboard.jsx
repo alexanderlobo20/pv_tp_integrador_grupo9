@@ -1,4 +1,5 @@
 import { useAdmin } from "../context/AdminContext";
+import ListaClientes from "./ListaClientes";
 
 export default function Dashboard() {
   const { admin } = useAdmin();
@@ -27,6 +28,7 @@ export default function Dashboard() {
       </div>
 
       <hr />
+      <ListaClientes />
     </div>
   );
 }
