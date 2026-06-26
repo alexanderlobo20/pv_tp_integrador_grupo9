@@ -3,6 +3,17 @@ import Button from '@mui/material/Button';
 import ModuloC from '../components/common/ModuloC';
 import Dialog from '@mui/material/Dialog';
 import { useEffect } from 'react';
+import {
+  Box,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography,
+} from '@mui/material';
 
 function ListaClientes() {
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
@@ -65,30 +76,64 @@ function ListaClientes() {
       </Dialog>
 
       <section>
-        <h1>Lista de Clientes</h1>
-        <input
-          type='text'
-          placeholder='Buscar apellido o ciudad...'
+        <Typography variant='h4'>Lista de Clientes</Typography>
+        <TextField
+          label='Buscar por apellido o ciudad'
+          variant='outlined'
           value={buscar}
           onChange={(e) => setBuscar(e.target.value)}
+          sx={{ m: 2 }}
         />
 
-        {estado === 'carga' && <p>Cargando...</p>}
+        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
+          {estado === 'carga' && (
+            <div style={{ textAlign: 'center', marginTop: '40px' }}>
+              {/* <Spinner
+                animation='border'
+                role='status'
+              /> */}
+
+              <p style={{ color: '#aaa', marginTop: 10 }}>
+                Cargando clientes...
+              </p>
+            </div>
+          )}
+        </Box>
+
         {estado === 'error' && <p>Error al cargar clientes</p>}
-        {estado === 'exito' && (
-          <ul>
-            {clientesFiltrados.map((cliente) => (
-              <li key={cliente.id}>
-                <h2>
-                  {cliente.name.firstname} {cliente.name.lastname}
-                </h2>
-                <p>{cliente.address.city}</p>
-                <button>Editar</button>
-                <button>Eliminar</button>
-              </li>
-            ))}
-          </ul>
-        )}
+        <Box>
+          {estado === 'exito' && (
+            <TableContainer>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Nombre</TableCell>
+                    <TableCell>Apellido</TableCell>
+                    <TableCell>Ciudad</TableCell>
+                    <TableCell>Email</TableCell>
+                    <TableCell>Teléfono</TableCell>
+                    <TableCell>Acciones</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {clientesFiltrados.map((cliente) => (
+                    <TableRow key={cliente.id}>
+                      <TableCell>{cliente.name.firstname}</TableCell>
+                      <TableCell>{cliente.name.lastname}</TableCell>
+                      <TableCell>{cliente.address.city}</TableCell>
+                      <TableCell>{cliente.email}</TableCell>
+                      <TableCell>{cliente.phone}</TableCell>
+                      <TableCell>
+                        <button>Editar</button>
+                        <button>Eliminar</button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
+        </Box>
       </section>
     </>
   );
