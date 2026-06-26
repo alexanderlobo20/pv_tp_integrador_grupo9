@@ -13,6 +13,8 @@ function ListaClientes() {
   const [clientes, setClientes] = useState([]);
   const [estado, setEstado] = useState('');
 
+  const [buscar, setBuscar] = useState('');
+
   useEffect(() => {
     const obtenerClientes = async () => {
       try {
@@ -32,6 +34,13 @@ function ListaClientes() {
     };
     obtenerClientes();
   }, []);
+
+  const clientesFiltrados = clientes.filter((cliente) => {
+    const apellido = cliente.name.lastname.toLowerCase() || '';
+    const ciudad = cliente.address.city.toLowerCase() || '';
+    const query = buscar.toLowerCase();
+    return apellido.includes(query) || ciudad.includes(query);
+  });
 
   return (
     <>
@@ -57,12 +66,18 @@ function ListaClientes() {
 
       <section>
         <h1>Lista de Clientes</h1>
+        <input
+          type='text'
+          placeholder='Buscar apellido o ciudad...'
+          value={buscar}
+          onChange={(e) => setBuscar(e.target.value)}
+        />
 
         {estado === 'carga' && <p>Cargando...</p>}
         {estado === 'error' && <p>Error al cargar clientes</p>}
         {estado === 'exito' && (
           <ul>
-            {clientes.map((cliente) => (
+            {clientesFiltrados.map((cliente) => (
               <li key={cliente.id}>
                 <h2>
                   {cliente.name.firstname} {cliente.name.lastname}
