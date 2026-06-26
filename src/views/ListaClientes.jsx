@@ -15,7 +15,7 @@ function ListaClientes() {
             <Button variant="contained" onClick={handleOpen}>Ingresar nuevo Cliente</Button>
 
             <Dialog open={mostrarFormulario} onClose={handleClose} maxWidth="md" fullWidth PaperProps={{sx: { borderRadius: 4 }}}>
-                <ModuloC onCerrar={handleClose} />
+                <ModuloC onCerrar={handleClose} onSuccess={handleClose} />
             </Dialog>
         </>
     );
