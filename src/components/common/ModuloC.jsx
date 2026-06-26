@@ -1,85 +1,45 @@
 import { useState } from "react";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
-import Snackbar from "@mui/material/Snackbar";
-import { Alert, Typography } from "@mui/material";
+import { Box, Typography, TextField, Button, Snackbar, Alert, Divider, Stack} from "@mui/material";
 
 const ModuloC = ({ onCerrar }) => {
 
-    const [form, setForm] = useState({email: "",username: "",password: "",firstname: "",lastname: "",phone: "",city: "",street: "",number: "",zipcode: ""});
+    const [form, setForm] = useState({
+        email: "",
+        username: "",
+        password: "",
+        firstname: "",
+        lastname: "",
+        phone: "",
+        city: "",
+        street: "",
+        number: "",
+        zipcode: "",
+    });
 
     const [mensaje, setMensaje] = useState("");
     const [severity, setSeverity] = useState("success");
     const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const handleChange = (e) => {
         setForm({
             ...form,
-            [e.target.name]: e.target.value
+            [e.target.name]: e.target.value,
         });
-    };
-
-    const style = {
-        titulo: {
-            padding: "2px",
-            color: "black",
-            textAlign: "center",
-            fontWeight: "bold",
-            fontFamily: "Century Gothic, sans-serif",
-            borderBottom: "3px solid #1976d2",
-            display: "inline-block",
-            paddingBottom: "8px"
-        },
-
-        Boton1: {
-            mt: 3,
-            m: 4,
-            px: 4,
-            py: 1.5,
-            borderRadius: "8px",
-            backgroundColor: "#0b76e049",
-            fontWeight: "bold",
-            "&:hover": {
-                color: "white",
-                backgroundColor: "#115293"
-            },
-            fontFamily: "Century Gothic, sans-serif",
-            cursor: "pointer"
-        },
-
-        Boton2: {
-            mt: 3,
-            m: 4,
-            px: 4,
-            py: 1.5,
-            borderRadius: "8px",
-            backgroundColor: "#e00b0b49",
-            fontWeight: "bold",
-            color: "#e00b0b",
-            "&:hover": {
-                color: "white",
-                backgroundColor: "#931111"
-            },
-            fontFamily: "Century Gothic, sans-serif",
-            cursor: "pointer"
-        },
-
-        Texto: {
-            m: "20px",
-            width: "50%"
-        }
     };
 
     const guardarCliente = async () => {
 
         const campos = Object.values(form);
 
-        if (campos.some(c => !c)) {
+        if (campos.some((c) => !String(c).trim())) {
             setSeverity("error");
             setMensaje("Completa todos los campos");
             setSnackbarOpen(true);
             return;
         }
+
+        setLoading(true);
 
         const cliente = {
             email: form.email,
@@ -87,85 +47,254 @@ const ModuloC = ({ onCerrar }) => {
             password: form.password,
             name: {
                 firstname: form.firstname,
-                lastname: form.lastname
+                lastname: form.lastname,
             },
             phone: form.phone,
             address: {
                 city: form.city,
                 street: form.street,
-                number: Number(form.number),
-                zipcode: form.zipcode
-            }
+                number: form.number ? Number(form.number) : 0,
+                zipcode: form.zipcode,
+            },
         };
 
         try {
             const respuesta = await fetch("https://fakestoreapi.com/users", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                },
                 body: JSON.stringify(cliente),
             });
 
+            if (!respuesta.ok) {
+                throw new Error("Error en la creación del usuario");
+            }
+
             const datos = await respuesta.json();
-            console.log(datos);
 
             setSeverity("success");
-            setMensaje(`Usuario creado con ID: ${datos.id}`);
+            setMensaje(`Usuario creado correctamente. ID: ${datos.id}`);
             setSnackbarOpen(true);
 
-            setForm({email: "",username: "",password: "",firstname: "",lastname: "",phone: "",city: "",street: "",number: "",zipcode: ""});
+            setForm({
+                email: "",
+                username: "",
+                password: "",
+                firstname: "",
+                lastname: "",
+                phone: "",
+                city: "",
+                street: "",
+                number: "",
+                zipcode: "",
+            });
 
         } catch (error) {
-            console.error("Error al guardar el cliente:", error);
-            setMensaje("Error al crear usuario");
+            console.error(error);
+
             setSeverity("error");
+            setMensaje("Ocurrió un error al crear el usuario");
             setSnackbarOpen(true);
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
         <>
-            <Typography variant="h2" sx={style.titulo}>Datos Personales:</Typography>
+            <Box sx={{ p: 4 }}>
 
-            <div>
-                <TextField label="Email" name="email" value={form.email} onChange={handleChange} sx={style.Texto} />
-                <TextField label="Username" name="username" value={form.username} onChange={handleChange} sx={style.Texto} />
-                <TextField label="Password" name="password" value={form.password} onChange={handleChange} sx={style.Texto} />
-            </div>
+                <Typography
+                    variant="h4"
+                    fontWeight={800}
+                    textAlign="center"
+                    sx={{
+                        mb: 1,
+                        background: "linear-gradient(90deg, #1976d2, #42a5f5)",
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                        letterSpacing: 1,
+                    }}
+                >
+                    Registro de Cliente
+                </Typography>
 
-            <Typography variant="h2" sx={style.titulo}>Nombre:</Typography>
+                <Typography
+                    variant="subtitle1"
+                    textAlign="center"
+                    color="text.secondary"
+                    sx={{ mb: 3 }}
+                >
+                    Completa los datos para dar de alta un nuevo usuario en el sistema
+                </Typography>
 
-            <div>
-                <TextField label="Firstname" name="firstname" value={form.firstname} onChange={handleChange} sx={style.Texto} />
-                <TextField label="Lastname" name="lastname" value={form.lastname} onChange={handleChange} sx={style.Texto} />
-                <TextField label="Phone" name="phone" value={form.phone} onChange={handleChange} sx={style.Texto} />
-            </div>
+                <Divider sx={{ mb: 3 }} />
 
-            <Typography variant="h2" sx={style.titulo}>Dirección:</Typography>
+                <Typography variant="h6" sx={{ mb: 2 }}>
+                    Datos de la Cuenta
+                </Typography>
 
-            <div>
-                <TextField label="City" name="city" value={form.city} onChange={handleChange} sx={style.Texto} />
-                <TextField label="Street" name="street" value={form.street} onChange={handleChange} sx={style.Texto} />
-                <TextField label="Number" name="number" value={form.number} onChange={handleChange} sx={style.Texto} />
-                <TextField label="Zipcode" name="zipcode" value={form.zipcode} onChange={handleChange} sx={style.Texto} />
-            </div>
+                <Stack spacing={2}>
+                    <TextField
+                        fullWidth
+                        label="Correo electrónico"
+                        name="email"
+                        value={form.email}
+                        onChange={handleChange}
+                    />
 
-            <Button variant="contained" sx={style.Boton1} onClick={guardarCliente}>
-                Guardar Usuario
-            </Button>
+                    <TextField
+                        fullWidth
+                        label="Nombre de usuario"
+                        name="username"
+                        value={form.username}
+                        onChange={handleChange}
+                    />
 
-            <Button variant="contained" sx={style.Boton2} onClick={onCerrar}>
-                Volver
-            </Button>
+                    <TextField
+                        fullWidth
+                        label="Contraseña"
+                        name="password"
+                        type="password"
+                        value={form.password}
+                        onChange={handleChange}
+                    />
+                </Stack>
+
+                <Typography variant="h6" sx={{ mt: 4, mb: 2 }}>
+                    Información Personal
+                </Typography>
+
+                <Box
+                    sx={{
+                        display: "grid",
+                        gridTemplateColumns: {
+                            xs: "1fr",
+                            md: "1fr 1fr",
+                        },
+                        gap: 2,
+                    }}
+                >
+                    <TextField
+                        fullWidth
+                        label="Nombre"
+                        name="firstname"
+                        value={form.firstname}
+                        onChange={handleChange}
+                    />
+
+                    <TextField
+                        fullWidth
+                        label="Apellido"
+                        name="lastname"
+                        value={form.lastname}
+                        onChange={handleChange}
+                    />
+
+                    <TextField
+                        fullWidth
+                        label="Teléfono"
+                        name="phone"
+                        value={form.phone}
+                        onChange={handleChange}
+                    />
+                </Box>
+
+                <Typography variant="h6" sx={{ mt: 4, mb: 2 }}>
+                    Dirección
+                </Typography>
+
+                <Box
+                    sx={{
+                        display: "grid",
+                        gridTemplateColumns: {
+                            xs: "1fr",
+                            md: "1fr 1fr",
+                        },
+                        gap: 2,
+                    }}
+                >
+                    <TextField
+                        fullWidth
+                        label="Ciudad"
+                        name="city"
+                        value={form.city}
+                        onChange={handleChange}
+                    />
+
+                    <TextField
+                        fullWidth
+                        label="Calle"
+                        name="street"
+                        value={form.street}
+                        onChange={handleChange}
+                    />
+
+                    <TextField
+                        fullWidth
+                        label="Número"
+                        name="number"
+                        type="number"
+                        value={form.number}
+                        onChange={handleChange}
+                    />
+
+                    <TextField
+                        fullWidth
+                        label="Código Postal"
+                        name="zipcode"
+                        value={form.zipcode}
+                        onChange={handleChange}
+                    />
+                </Box>
+
+                <Stack
+                    direction="row"
+                    justifyContent="flex-end"
+                    spacing={2}
+                    sx={{ mt: 4 }}
+                >
+                   <Button
+                        variant="contained"
+                        onClick={onCerrar}
+                        sx={{
+                            backgroundColor: "#d32f2f",
+                            color: "white",
+                            "&:hover": {
+                                backgroundColor: "#9a0007",
+                            },
+                        }}
+                    >
+                        Cancelar
+                    </Button>
+
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={guardarCliente}
+                        disabled={loading}
+                    >
+                        {loading ? "Guardando..." : "Guardar Cliente"}
+                    </Button>
+                </Stack>
+            </Box>
 
             <Snackbar
                 open={snackbarOpen}
                 autoHideDuration={3000}
-                onClose={(event, reason) => {
-                    if (reason === "clickaway") return;
-                    setSnackbarOpen(false);
+                onClose={() => setSnackbarOpen(false)}
+                anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "center",
                 }}
             >
-                <Alert severity={severity} onClose={() => setSnackbarOpen(false)}>
+                <Alert
+                    severity={severity}
+                    variant="filled"
+                    onClose={() => setSnackbarOpen(false)}
+                    sx={{ width: "100%" }}
+                >
                     {mensaje}
                 </Alert>
             </Snackbar>
