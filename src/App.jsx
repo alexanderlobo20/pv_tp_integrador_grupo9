@@ -1,8 +1,9 @@
-import { Routes, Route, Navigate } from "react-router-dom";
-import Login from "./views/Login";
-import Dashboard from "./views/Dashboard";
-import ProtectedRoute from "./routes/ProtectedRoute";
-import Header from "./components/layout/Header";
+import { Routes, Route, Navigate } from 'react-router-dom';
+import Login from './views/Login';
+import Dashboard from './views/Dashboard';
+import ProtectedRoute from './routes/ProtectedRoute';
+import Header from './components/layout/Header';
+import ListaClientes from './views/ListaClientes';
 
 export default function App() {
   return (
@@ -10,10 +11,13 @@ export default function App() {
       <Header />
 
       <Routes>
-        <Route path="/login" element={<Login />} />
+        <Route
+          path='/login'
+          element={<Login />}
+        />
 
         <Route
-          path="/"
+          path='/'
           element={
             <ProtectedRoute>
               <Dashboard />
@@ -21,7 +25,15 @@ export default function App() {
           }
         />
 
-        <Route path="*" element={<Navigate to="/" />} />
+        <Route
+          path='/clientes'
+          element={<ListaClientes />}
+        />
+
+        <Route
+          path='*'
+          element={<Navigate to='/' />}
+        />
       </Routes>
     </>
   );
