@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAdmin } from "../context/AdminContext";
-import { Box,Button,Card,CardContent,Container,FormControl,InputAdornment,InputLabel,MenuItem,Select,TextField,Typography} from "@mui/material";
+import {
+  Box, Button, Card, CardContent, Container, FormControl, InputAdornment,
+  InputLabel, MenuItem, Select, TextField, Typography
+} from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 
@@ -11,15 +14,22 @@ export default function Login() {
 
   const [name, setName] = useState("");
   const [sector, setSector] = useState("Soporte");
+  const [error, setError] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     if (name.trim() === "") {
-      alert("El nombre del administrador es obligatorio");
+      setError("El nombre es obligatorio");
       return;
     }
 
+    if (name.length > 15) {
+      setError("El nombre no puede contener más de 15 caracteres");
+      return;
+    }
+
+    setError("");
     login(name, sector);
     navigate("/");
   };
@@ -31,17 +41,12 @@ export default function Login() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: "linear-gradient(135deg, #1976d2 0%, #42a5f5 100%)",
+        background: "linear-gradient(135deg, #034c95 0%, #015bb4 100%)",
         px: 2,
       }}
     >
       <Container maxWidth="sm">
-        <Card
-          elevation={12}
-          sx={{
-            borderRadius: 4,
-          }}
-        >
+        <Card elevation={12} sx={{ borderRadius: 4 }}>
           <CardContent sx={{ p: 5 }}>
             <Box
               sx={{
@@ -53,21 +58,14 @@ export default function Login() {
             >
               <AdminPanelSettingsIcon
                 color="primary"
-                sx={{
-                  fontSize: 70,
-                  mb: 2,
-                }}
+                sx={{ fontSize: 70, mb: 2 }}
               />
 
               <Typography variant="h4" fontWeight="bold">
-                Login Admin
+                Iniciar sesión
               </Typography>
 
-              <Typography
-                variant="body1"
-                color="text.secondary"
-                sx={{ mt: 1 }}
-              >
+              <Typography variant="body1" color="text.secondary" sx={{ mt: 1 }}>
                 Ingresá tus datos para continuar
               </Typography>
             </Box>
@@ -77,8 +75,12 @@ export default function Login() {
                 fullWidth
                 label="Nombre"
                 value={name}
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e) => {
+                  setName(e.target.value);
+                  setError("");
+                }}
                 margin="normal"
+                error={!!error}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
@@ -87,6 +89,16 @@ export default function Login() {
                   ),
                 }}
               />
+
+              {error && (
+                <Typography
+                  color="error"
+                  variant="body2"
+                  sx={{ mt: 1, ml: 1 }}
+                >
+                  {error}
+                </Typography>
+              )}
 
               <FormControl fullWidth margin="normal">
                 <InputLabel>Sector</InputLabel>
