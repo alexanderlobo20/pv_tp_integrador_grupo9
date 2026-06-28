@@ -5,36 +5,43 @@ import ProtectedRoute from './routes/ProtectedRoute';
 import Header from './components/layout/Header';
 import ListaClientes from './views/ListaClientes';
 
-export default function App() {
+const PrivateLayout = ({ children }) => {
   return (
     <>
       <Header />
-
-      <Routes>
-        <Route
-          path='/login'
-          element={<Login />}
-        />
-
-        <Route
-          path='/'
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path='/clientes'
-          element={<ListaClientes />}
-        />
-
-        <Route
-          path='*'
-          element={<Navigate to='/' />}
-        />
-      </Routes>
+      {children}
     </>
+  );
+}
+
+export default function App() {
+  return (
+    <Routes>
+      <Route path='/login' element={<Login />} />
+
+      <Route
+        path='/'
+        element={
+          <ProtectedRoute>
+            <PrivateLayout>
+              <Dashboard />
+            </PrivateLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path='/clientes'
+        element={
+          <ProtectedRoute>
+            <PrivateLayout>
+              <ListaClientes />
+            </PrivateLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route path='*' element={<Navigate to='/' replace />} />
+    </Routes>
   );
 }
