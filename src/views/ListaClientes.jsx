@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import Button from '@mui/material/Button';
-import ModuloC from '../components/common/ModuloC';
+import FormularioCliente from '../components/common/FormularioCliente';
 import Dialog from '@mui/material/Dialog';
 import { useEffect } from 'react';
 import {
@@ -24,6 +24,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 function ListaClientes() {
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
 
+  const handleSend = (datos) => setClientes([...clientes, datos]);
   const handleOpen = () => setMostrarFormulario(true);
   const handleClose = () => setMostrarFormulario(false);
 
@@ -93,7 +94,8 @@ function ListaClientes() {
             fullWidth
             PaperProps={{ sx: { borderRadius: 4 } }}
           >
-            <ModuloC
+           <FormularioCliente
+              onAlta={handleSend}
               onCerrar={handleClose}
               onSuccess={handleClose}
             />
