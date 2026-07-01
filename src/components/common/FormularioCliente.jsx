@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Box, Typography, TextField, Button, Snackbar, Alert, Divider, Stack} from "@mui/material";
 
-const ModuloC = ({ onCerrar }) => {
+const FormularioCliente = ({ onCerrar, onAlta }) => {
 
     const [form, setForm] = useState({
         email: "",
@@ -76,6 +76,8 @@ const ModuloC = ({ onCerrar }) => {
             setSeverity("success");
             setMensaje(`Usuario creado correctamente. ID: ${datos.id}`);
             setSnackbarOpen(true);
+            
+            onAlta({ ...cliente, id: datos.id});
 
             setForm({
                 email: "",
@@ -302,5 +304,5 @@ const ModuloC = ({ onCerrar }) => {
     );
 };
 
-export default ModuloC;
+export default FormularioCliente;
 
