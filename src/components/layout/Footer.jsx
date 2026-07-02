@@ -112,8 +112,10 @@ export default function Footer() {
                 key={dev.url}
                 direction="row"
                 spacing={1}
-                justifyContent={{ xs: "center", md: "flex-end" }}
-                alignItems="center"
+                sx={{
+                  justifyContent: { xs: "center", md: "flex-end" },
+                  alignItems: "center",
+                }}
               >
                 <GitHubIcon sx={{ fontSize: 16 }} />
 
