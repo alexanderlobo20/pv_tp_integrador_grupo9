@@ -81,7 +81,7 @@ export default function Login() {
                 }}
                 margin="normal"
                 error={!!error}
-                InputProps={{
+                slotProps={{
                   startAdornment: (
                     <InputAdornment position="start">
                       <PersonIcon color="action" />
