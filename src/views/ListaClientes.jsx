@@ -25,6 +25,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Link } from 'react-router-dom';
+import ClienteCard from '../components/common/ClienteCard';
 
 function ListaClientes() {
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
@@ -133,86 +134,13 @@ function ListaClientes() {
         >
           <Grid>
             {clientesFiltrados.map((cliente) => (
-              <Grid key={cliente.id}>
-                <Card
-                  variant='outlined'
-                  sx={{ boxShadow: 1, mb: 1 }}
-                >
-                  <CardContent>
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                      }}
-                    >
-                      <Box>
-                        <Typography
-                          variant='h5'
-                          component='div'
-                        >
-                          {cliente.name.firstname} {cliente.name.lastname}
-                        </Typography>
-                        <Typography>{cliente.address.city}</Typography>
-                      </Box>
-                      <Box>
-                        <Button
-                          size='large'
-                          variant='contained'
-                        >
-                          <VisibilityIcon />
-                        </Button>
-                      </Box>
-                    </Box>
-                  </CardContent>
-                </Card>
-              </Grid>
+              <ClienteCard
+                key={cliente.id}
+                cliente={cliente}
+              />
             ))}
           </Grid>
         </Box>
-
-        {/* tabla de clientes - pantallas grandes */}
-        {/* <Box sx={{ display: { xs: 'none', md: 'block' } }}>
-          {estado === 'exito' && (
-            <TableContainer>
-              <Table>
-                <TableHead>
-                  <TableRow sx={{ backgroundColor: 'primary.contrastText' }}>
-                    <TableCell>Nombre</TableCell>
-                    <TableCell>Apellido</TableCell>
-                    <TableCell>Ciudad</TableCell>
-                    <TableCell></TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {clientesFiltrados.map((cliente) => (
-                    <TableRow key={cliente.id}>
-                      <TableCell>{cliente.name.firstname}</TableCell>
-                      <TableCell>{cliente.name.lastname}</TableCell>
-                      <TableCell>{cliente.address.city}</TableCell>
-                      <TableCell>
-                        <Box
-                          sx={{
-                            display: 'flex',
-                            gap: 1,
-                            justifyContent: 'center',
-                          }}
-                        >
-                          <Button
-                            variant='contained'
-                            color='primary'
-                            startIcon={<VisibilityIcon />}
-                          >
-                            Detalles
-                          </Button>
-                        </Box>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          )}
-        </Box> */}
       </Container>
     </>
   );
