@@ -16,10 +16,15 @@ import {
   TableRow,
   TextField,
   Typography,
+  Grid,
+  Card,
+  CardContent,
 } from '@mui/material';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import { Link } from 'react-router-dom';
 
 function ListaClientes() {
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
@@ -69,22 +74,21 @@ function ListaClientes() {
         >
           Lista de Clientes
         </Typography>
-        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1, my: 2 }}>
           <TextField
             label='Buscar por apellido o ciudad'
             variant='outlined'
             value={buscar}
             onChange={(e) => setBuscar(e.target.value)}
-            sx={{ m: 2, width: '75%' }}
+            sx={{ width: '75%' }}
           />
           <Button
             variant='contained'
             onClick={handleOpen}
-            startIcon={<PersonAddIcon />}
             size='large'
-            sx={{ m: 2, width: '25%' }}
+            sx={{ width: '25%' }}
           >
-            {/* Ingresar nuevo Cliente */}
+            <PersonAddIcon />
           </Button>
 
           <Dialog
@@ -94,18 +98,26 @@ function ListaClientes() {
             fullWidth
             PaperProps={{ sx: { borderRadius: 4 } }}
           >
-           <FormularioCliente
+            <FormularioCliente
               onAlta={handleSend}
               onCerrar={handleClose}
               onSuccess={handleClose}
             />
           </Dialog>
         </Box>
-      </Container>
-      <Container>
-        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
+        {/* </Container>
+      <Container> */}
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: 2,
+          }}
+        >
           {estado === 'carga' && (
-            <Typography style={{ color: '#aaa', marginTop: 10 }}>
+            <Typography style={{ color: '#aaa' }}>
               <CircularProgress />
               Cargando clientes...
             </Typography>
@@ -113,18 +125,62 @@ function ListaClientes() {
         </Box>
 
         {estado === 'error' && <p>Error al cargar clientes</p>}
-        <Box>
+
+        {/* tabla de clientes - pantallas pequeñas */}
+        <Box
+          /* sx={{ display: { xs: 'block', md: 'none' } }} */
+          style={{ marginBottom: 15 }}
+        >
+          <Grid>
+            {clientesFiltrados.map((cliente) => (
+              <Grid key={cliente.id}>
+                <Card
+                  variant='outlined'
+                  sx={{ boxShadow: 1, mb: 1 }}
+                >
+                  <CardContent>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                      }}
+                    >
+                      <Box>
+                        <Typography
+                          variant='h5'
+                          component='div'
+                        >
+                          {cliente.name.firstname} {cliente.name.lastname}
+                        </Typography>
+                        <Typography>{cliente.address.city}</Typography>
+                      </Box>
+                      <Box>
+                        <Button
+                          size='large'
+                          variant='contained'
+                        >
+                          <VisibilityIcon />
+                        </Button>
+                      </Box>
+                    </Box>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
+
+        {/* tabla de clientes - pantallas grandes */}
+        {/* <Box sx={{ display: { xs: 'none', md: 'block' } }}>
           {estado === 'exito' && (
             <TableContainer>
               <Table>
                 <TableHead>
-                  <TableRow>
+                  <TableRow sx={{ backgroundColor: 'primary.contrastText' }}>
                     <TableCell>Nombre</TableCell>
                     <TableCell>Apellido</TableCell>
                     <TableCell>Ciudad</TableCell>
-                    <TableCell>Email</TableCell>
-                    <TableCell>Teléfono</TableCell>
-                    <TableCell>Acciones</TableCell>
+                    <TableCell></TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -133,8 +189,6 @@ function ListaClientes() {
                       <TableCell>{cliente.name.firstname}</TableCell>
                       <TableCell>{cliente.name.lastname}</TableCell>
                       <TableCell>{cliente.address.city}</TableCell>
-                      <TableCell>{cliente.email}</TableCell>
-                      <TableCell>{cliente.phone}</TableCell>
                       <TableCell>
                         <Box
                           sx={{
@@ -145,14 +199,11 @@ function ListaClientes() {
                         >
                           <Button
                             variant='contained'
-                            startIcon={<EditIcon />}
-                            color='warning'
-                          ></Button>
-                          <Button
-                            variant='contained'
-                            startIcon={<DeleteIcon />}
-                            color='error'
-                          ></Button>
+                            color='primary'
+                            startIcon={<VisibilityIcon />}
+                          >
+                            Detalles
+                          </Button>
                         </Box>
                       </TableCell>
                     </TableRow>
@@ -161,7 +212,7 @@ function ListaClientes() {
               </Table>
             </TableContainer>
           )}
-        </Box>
+        </Box> */}
       </Container>
     </>
   );
