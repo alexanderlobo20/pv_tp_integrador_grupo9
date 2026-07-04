@@ -7,9 +7,12 @@ import {
   Box,
 } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import { Link, useNavigate } from 'react-router-dom';
 
 function ClienteCard({ cliente }) {
   const { id, name, address } = cliente;
+
+  const navigate = useNavigate();
 
   return (
     <Grid key={id}>
@@ -37,6 +40,9 @@ function ClienteCard({ cliente }) {
               <Button
                 size='large'
                 variant='contained'
+                onClick={() =>
+                  navigate(`/clientes/${id}`, { state: { cliente: cliente } })
+                }
               >
                 <VisibilityIcon />
               </Button>

@@ -6,6 +6,7 @@ import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import ListaClientes from './views/ListaClientes';
 import { Box } from '@mui/material';
+import DetalleCliente from './views/DetalleCliente';
 
 const PrivateLayout = ({ children }) => {
   return (
@@ -19,20 +20,21 @@ const PrivateLayout = ({ children }) => {
       >
         <Header />
 
-        <Box sx={{ flex: 1 }}>
-          {children}
-        </Box>
+        <Box sx={{ flex: 1 }}>{children}</Box>
 
         <Footer />
       </Box>
     </>
   );
-}
+};
 
 export default function App() {
   return (
     <Routes>
-      <Route path='/login' element={<Login />} />
+      <Route
+        path='/login'
+        element={<Login />}
+      />
 
       <Route
         path='/'
@@ -56,7 +58,26 @@ export default function App() {
         }
       />
 
-      <Route path='*' element={<Navigate to='/' replace />} />
+      <Route
+        path='/clientes/:id'
+        element={
+          <ProtectedRoute>
+            <PrivateLayout>
+              <DetalleCliente />
+            </PrivateLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path='*'
+        element={
+          <Navigate
+            to='/'
+            replace
+          />
+        }
+      />
     </Routes>
   );
 }
