@@ -393,6 +393,3 @@ const FormularioCliente = ({ onCerrar, onAlta }) => {
 export default FormularioCliente;
 
 
-
-export default FormularioCliente;
-
