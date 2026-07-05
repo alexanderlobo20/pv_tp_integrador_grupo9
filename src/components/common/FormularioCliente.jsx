@@ -28,6 +28,87 @@ const FormularioCliente = ({ onCerrar, onAlta }) => {
         });
     };
 
+    const validarCliente = () => {
+        const nombreValidar = /^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$/;
+        const telefonoValidar= /^[0-9]+$/;
+        const emailValidar = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const ciudadValidar = /^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$/;
+        const zipcodeValidar = /^[A-Za-z0-9 -]{3,10}$/;
+        
+        
+        if (!emailValidar.test(form.email)) {
+            setSeverity("error");
+            setMensaje("Correo electrónico inválido");
+            setSnackbarOpen(true);
+            return false;
+        }
+
+        if (form.username.trim().length < 4) {
+            setSeverity("error");
+            setMensaje("El usuario debe tener al menos 4 caracteres");
+            setSnackbarOpen(true);
+            return false;
+        }
+
+        if (form.password.length < 6) {
+            setSeverity("error");
+            setMensaje("La contraseña debe tener al menos 6 caracteres");
+            setSnackbarOpen(true);
+            return false;
+        }
+
+        if (!nombreValidar.test(form.firstname) || !nombreValidar.test(form.lastname)) {
+            setSeverity("error");
+            setMensaje("El nombre y el apellido solo pueden contener letras y espacios");
+            setSnackbarOpen(true);
+            return false;
+        }
+
+        if (!telefonoValidar.test(form.phone)) {
+            setSeverity("error");
+            setMensaje("El teléfono sólo puede contener números");
+            setSnackbarOpen(true);
+            return false;
+        }
+
+        if (form.phone.length < 8) {
+            setSeverity("error");
+            setMensaje("El teléfono debe tener al menos 8 dígitos");
+            setSnackbarOpen(true);
+            return false;
+        }
+
+        if (Number(form.number) <= 0) {
+            setSeverity("error");
+            setMensaje("El número de la dirección debe ser mayor a cero");
+            setSnackbarOpen(true);
+            return false;
+        }
+        
+        if (!zipcodeValidar.test(form.zipcode)) {
+            setSeverity("error");
+            setMensaje("Código postal inválido");
+            setSnackbarOpen(true);
+            return false;
+        }
+        
+        if (!ciudadValidar.test(form.city)) {
+            setSeverity("error");
+            setMensaje("La ciudad solo puede contener letras y espacios");
+            setSnackbarOpen(true);
+            return false;
+        }
+        
+        if (form.street.trim().length < 3) {
+            setSeverity("error");
+            setMensaje("La calle debe tener al menos 3 caracteres");
+            setSnackbarOpen(true);
+            return false;
+        }
+
+        return true;
+    };
+
     const guardarCliente = async () => {
 
         const campos = Object.values(form);
@@ -36,6 +117,10 @@ const FormularioCliente = ({ onCerrar, onAlta }) => {
             setSeverity("error");
             setMensaje("Completa todos los campos");
             setSnackbarOpen(true);
+            return;
+        }
+
+        if (!validarCliente()) {
             return;
         }
 
@@ -142,6 +227,7 @@ const FormularioCliente = ({ onCerrar, onAlta }) => {
                         fullWidth
                         label="Correo electrónico"
                         name="email"
+                        type="email"
                         value={form.email}
                         onChange={handleChange}
                     />
@@ -303,6 +389,10 @@ const FormularioCliente = ({ onCerrar, onAlta }) => {
         </>
     );
 };
+
+export default FormularioCliente;
+
+
 
 export default FormularioCliente;
 

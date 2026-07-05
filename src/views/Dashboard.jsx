@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, useRef } from "react";
+import { useClientes } from '../context/ClientesContext';
 import { useNavigate } from "react-router-dom";
 import {
   Box,
@@ -14,29 +15,11 @@ import LocationCityIcon from "@mui/icons-material/LocationCity";
 
 export default function Dashboard() {
   const navigate = useNavigate();
-
-  const [clientes, setClientes] = useState([]);
-  const [estado, setEstado] = useState("idle");
-
   const distribucionRef = useRef(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setEstado("loading");
-        const res = await fetch("https://fakestoreapi.com/users");
-        const data = await res.json();
-        setClientes(Array.isArray(data) ? data : []);
-        setEstado("success");
-      } catch (err) {
-        setEstado("error");
-      }
-    };
+  const { clientes, estado } = useClientes();
 
-    fetchData();
-  }, []);
-
-  const loading = estado === "loading";
+  const loading = estado === "carga" || estado === "";
 
   const safeClientes = Array.isArray(clientes) ? clientes : [];
 
@@ -104,7 +87,6 @@ export default function Dashboard() {
     <Box sx={{ minHeight: "100vh", background: "#f5f5f5", py: 4 }}>
       <Container maxWidth="lg">
 
-        {/* dashboard */}
         <Paper sx={{ p: 4, mb: 3, borderRadius: 3, color: "white", background: "linear-gradient(135deg, #034c95 0%, #015bb4 60%, #0284c7 100%)" }}>
           <Typography variant="h4" sx={{ fontWeight: 800 }}>
             Dashboard
@@ -114,10 +96,8 @@ export default function Dashboard() {
           </Typography>
         </Paper>
 
-        {/* cards */}
         <Stack direction={{ xs: "column", md: "row" }} spacing={2} mb={3}>
 
-          {/* clientes */}
           <Paper
             component="button"
             onClick={() => navigate("/clientes")}
@@ -154,7 +134,6 @@ export default function Dashboard() {
             )}
           </Paper>
 
-          {/* ciudades */}
           <Paper
             component="button"
             onClick={() => {
@@ -192,12 +171,10 @@ export default function Dashboard() {
           </Paper>
         </Stack>
 
-        {/* sin resultados clientes */}
-        {safeClientes.length === 0 && estado === "success" && (
+        {safeClientes.length === 0 && estado === "exito" && (
           <Typography sx={{ mb: 2 }}>No hay clientes disponibles</Typography>
         )}
 
-        {/* ultimos clientes */}
         <Paper sx={{ p: 3, mt: 3, mb: 3 }}>
           <Typography variant="h6" sx={{ mb: 1.5, fontWeight: 600 }}>
             Últimos clientes agregados
