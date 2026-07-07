@@ -9,93 +9,123 @@ import {
   Container,
   TextField,
   Typography,
-  Grid,
+  Paper,
 } from '@mui/material';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import ClienteCard from '../components/common/ClienteCard';
 
 function ListaClientes() {
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
+
   const { clientes, estado, agregarCliente, eliminarCliente } = useClientes();
+
   const handleOpen = () => setMostrarFormulario(true);
   const handleClose = () => setMostrarFormulario(false);
-  
+
   const [buscar, setBuscar] = useState('');
 
   const clientesFiltrados = clientes.filter((cliente) => {
     const apellido = cliente.name?.lastname?.toLowerCase() || '';
     const ciudad = cliente.address?.city?.toLowerCase() || '';
     const query = buscar.toLowerCase();
+
     return apellido.includes(query) || ciudad.includes(query);
   });
 
   return (
-    <>
-      <Container>
-        <Typography
-          variant='h4'
-          sx={{ mt: 2 }}
+    <Box
+      sx={{
+        minHeight: '100vh',
+        background: '#f5f5f5',
+        py: 4,
+      }}
+    >
+      <Container maxWidth="lg">
+        <Paper
+          sx={{
+            p: 4,
+            mb: 3,
+            borderRadius: 3,
+            color: 'white',
+            background:
+              'linear-gradient(135deg, #034c95 0%, #015bb4 60%, #0284c7 100%)',
+          }}
         >
-          Lista de Clientes
-        </Typography>
-        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1, my: 2 }}>
-          <TextField
-            label='Buscar por apellido o ciudad'
-            variant='outlined'
-            value={buscar}
-            onChange={(e) => setBuscar(e.target.value)}
-            sx={{ width: '75%' }}
-          />
-          <Button
-            variant='contained'
-            onClick={handleOpen}
-            size='large'
-            sx={{ width: '25%' }}
-          >
-            <PersonAddIcon />
-          </Button>
+          <Typography variant="h4" sx={{ fontWeight: 800 }}>
+            Lista de Clientes
+          </Typography>
+        </Paper>
 
-          <Dialog
-            open={mostrarFormulario}
-            onClose={handleClose}
-            maxWidth='md'
-            fullWidth
-            PaperProps={{ sx: { borderRadius: 4 } }}
-          >
-            <FormularioCliente
-              onAlta={agregarCliente}
-              onCerrar={handleClose}
-              onSuccess={handleClose}
-            />
-          </Dialog>
-        </Box>
-        {/* </Container>
-      <Container> */}
         <Box
           sx={{
             display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
             gap: 2,
+            mb: 3,
           }}
         >
-          {estado === 'carga' && (
-            <Typography style={{ color: '#aaa' }}>
-              <CircularProgress />
-              Cargando clientes...
-            </Typography>
-          )}
+          <TextField
+            label="Buscar por apellido o ciudad"
+            variant="outlined"
+            value={buscar}
+            onChange={(e) => setBuscar(e.target.value)}
+            fullWidth
+          />
+
+          <Button
+            variant="contained"
+            onClick={handleOpen}
+            sx={{
+              minWidth: 70,
+            }}
+          >
+            <PersonAddIcon />
+          </Button>
         </Box>
 
-        {estado === 'error' && <p>Error al cargar clientes</p>}
-
-        {/* tabla de clientes - pantallas pequeñas */}
-        <Box
-          /* sx={{ display: { xs: 'block', md: 'none' } }} */
-          style={{ marginBottom: 15 }}
+        <Dialog
+          open={mostrarFormulario}
+          onClose={handleClose}
+          maxWidth="md"
+          fullWidth
+          PaperProps={{ sx: { borderRadius: 4} }}
         >
-          <Grid>
+          <FormularioCliente
+            onAlta={agregarCliente}
+            onCerrar={handleClose}
+            onSuccess={handleClose}
+          />
+        </Dialog>
+
+        {estado === 'carga' && (
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              py: 5,
+              gap: 2,
+            }}
+          >
+            <CircularProgress />
+            <Typography>Cargando clientes...</Typography>
+          </Box>
+        )}
+
+        {estado === 'error' && (
+          <Typography color="error" align="center">
+            Error al cargar clientes
+          </Typography>
+        )}
+
+        {estado === 'exito' && (
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 0.5,
+              pb: 3,
+            }}
+          >
             {clientesFiltrados.map((cliente) => (
               <ClienteCard
                 key={cliente.id}
@@ -103,10 +133,10 @@ function ListaClientes() {
                 onEliminar={eliminarCliente}
               />
             ))}
-          </Grid>
-        </Box>
+          </Box>
+        )}
       </Container>
-    </>
+    </Box>
   );
 }
 
