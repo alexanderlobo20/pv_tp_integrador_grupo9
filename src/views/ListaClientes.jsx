@@ -10,6 +10,8 @@ import {
   TextField,
   Typography,
   Paper,
+  Snackbar,
+  Alert,
 } from '@mui/material';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import ClienteCard from '../components/common/ClienteCard';
@@ -23,6 +25,25 @@ function ListaClientes() {
   const handleClose = () => setMostrarFormulario(false);
 
   const [buscar, setBuscar] = useState('');
+
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [mensaje, setMensaje] = useState('');
+
+  const eliminarClienteConFeedback = async (id) => {
+    await eliminarCliente(id);
+
+    setMensaje('Cliente eliminado correctamente.');
+    setOpenSnackbar(true);
+  };
+
+  const agregarClienteConFeedback = (cliente) => {
+    agregarCliente(cliente);
+
+    setMensaje("Cliente agregado correctamente.");
+    setOpenSnackbar(true);
+
+    handleClose();
+  };
 
   const clientesFiltrados = clientes.filter((cliente) => {
     const apellido = cliente.name?.lastname?.toLowerCase() || '';
@@ -87,12 +108,11 @@ function ListaClientes() {
           onClose={handleClose}
           maxWidth="md"
           fullWidth
-          PaperProps={{ sx: { borderRadius: 4} }}
+          PaperProps={{ sx: { borderRadius: 4 } }}
         >
           <FormularioCliente
-            onAlta={agregarCliente}
+            onAlta={agregarClienteConFeedback}
             onCerrar={handleClose}
-            onSuccess={handleClose}
           />
         </Dialog>
 
@@ -130,11 +150,30 @@ function ListaClientes() {
               <ClienteCard
                 key={cliente.id}
                 cliente={cliente}
-                onEliminar={eliminarCliente}
+                onEliminar={eliminarClienteConFeedback}
               />
             ))}
           </Box>
         )}
+
+        <Snackbar
+          open={openSnackbar}
+          autoHideDuration={3000}
+          onClose={() => setOpenSnackbar(false)}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'center',
+          }}
+        >
+          <Alert
+            onClose={() => setOpenSnackbar(false)}
+            severity="success"
+            variant="filled"
+            sx={{ width: '100%' }}
+          >
+            {mensaje}
+          </Alert>
+        </Snackbar>
       </Container>
     </Box>
   );

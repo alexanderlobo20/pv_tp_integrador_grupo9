@@ -47,8 +47,8 @@ export const ClienteProvider = ({ children }) => {
     },[clientes]);
 
 
-    const agregarCliente = (clienteNuevo) => {
-        setClientes((prev) => [...prev, clienteNuevo]);
+    const agregarCliente = (cliente) => {
+        setClientes((prev) => [cliente, ...prev]);
     };
 
     const eliminarCliente = async (id) => {
