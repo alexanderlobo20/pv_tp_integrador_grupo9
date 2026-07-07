@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   Grid,
   Card,
@@ -9,15 +10,14 @@ import {
   DialogActions,
   DialogContent,
   CircularProgress,
+  Button,
 } from '@mui/material';
-
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { useNavigate } from 'react-router-dom';
 import { useAdmin } from '../../context/AdminContext';
-import { useState } from 'react';
 
 function ClienteCard({ cliente, onEliminar }) {
   const { id, name, address } = cliente;
@@ -28,43 +28,59 @@ function ClienteCard({ cliente, onEliminar }) {
   const [loadingDelete, setLoadingDelete] = useState(false);
 
   return (
-    <Grid key={id}>
-      <Card variant="outlined" sx={{ boxShadow: 1, mb: 1 }}>
+    <Grid>
+      <Card
+        variant="outlined"
+        sx={{
+          boxShadow: 1,
+          mb: 1,
+        }}
+      >
         <CardContent>
-
-          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}
+          >
             <Box>
-              <Typography variant="h5">
+              <Typography variant="h5" component="div">
                 {name.firstname} {name.lastname}
               </Typography>
+
               <Typography>{address.city}</Typography>
             </Box>
-            
-            <Box sx={{ display: 'flex', gap: 1 }}>
 
-              <Tooltip title="Ver detalle">
+            <Box
+              sx={{
+                display: 'flex',
+                gap: 1,
+              }}
+            >
+              <Tooltip title="Ver detalle" arrow>
                 <IconButton
                   color="primary"
                   onClick={() =>
-                    navigate(`/clientes/${id}`, { state: { cliente } })
+                    navigate(`/clientes/${id}`, {
+                      state: { cliente },
+                    })
                   }
                 >
-                  <VisibilityIcon />
+                  <VisibilityIcon sx={{ fontSize: 32 }} />
                 </IconButton>
               </Tooltip>
 
-              {admin?.sector === "Gerencia" && (
-                <Tooltip title="Eliminar cliente">
+              {admin?.sector === 'Gerencia' && (
+                <Tooltip title="Eliminar cliente" arrow>
                   <IconButton
                     color="error"
                     onClick={() => setOpenConfirm(true)}
                   >
-                    <DeleteIcon />
+                    <DeleteIcon sx={{ fontSize: 32 }} />
                   </IconButton>
                 </Tooltip>
               )}
-
             </Box>
           </Box>
         </CardContent>
@@ -77,48 +93,77 @@ function ClienteCard({ cliente, onEliminar }) {
         }}
         fullWidth
         maxWidth="xs"
+        slotProps={{
+          paper: {
+            sx: {
+              borderRadius: 3,
+              p: 0.5,
+              width: "100%",
+            },
+          },
+        }}
       >
-        <DialogTitle>Eliminar cliente</DialogTitle>
+        <DialogTitle sx={{ fontWeight: 700, fontSize: { xs: 18, sm: 20 } }}>
+          Eliminar cliente
+        </DialogTitle>
 
         <DialogContent>
-          <Typography color="text.secondary">
-            ¿Seguro que deseas eliminar este cliente?
+          <Typography
+            color="text.secondary"
+            sx={{ fontSize: { xs: 14, sm: 16 } }}
+          >
+            ¿Estás seguro de que deseas eliminar este cliente?
           </Typography>
         </DialogContent>
 
-        <DialogActions>
+        <DialogActions
+        sx={{
+          padding: { xs: 1.5, sm: 2 },
+          display: "flex",
+          flexDirection: { xs: "column", sm: "row" },
+          gap: 1,
+        }}
+      >
+          <Button
+            fullWidth
+            onClick={() => setOpenConfirm(false)}
+            disabled={loadingDelete}
+            variant="contained"
+            sx={{
+              backgroundColor: "#015bb4",
+              color: "white",
+              "&:hover": {
+                backgroundColor: "#034c95",
+              },
+            }}
+          >
+            Cancelar
+          </Button>
 
-          <Box sx={{ display: 'flex', gap: 1, width: '100%' }}>
+          <Button
+            fullWidth
+            onClick={async () => {
+              setLoadingDelete(true);
 
-            <button
-              onClick={() => setOpenConfirm(false)}
-              disabled={loadingDelete}
-              style={{ flex: 1 }}
-            >
-              Cancelar
-            </button>
+              await onEliminar(id);
 
-            <button
-              style={{ flex: 1 }}
-              disabled={loadingDelete}
-              onClick={() => {
-                setLoadingDelete(true);
-
-                onEliminar(id);
-
-                setLoadingDelete(false);
-                setOpenConfirm(false);
-              }}
-            >
-              {loadingDelete ? (
-                <CircularProgress size={18} />
-              ) : (
-                "Eliminar"
-              )}
-            </button>
-
-          </Box>
-
+              setLoadingDelete(false);
+              setOpenConfirm(false);
+            }}
+            sx={{
+              marginRight: { xs:  1, sm: 0 }
+            }}
+            variant="contained"
+            color="error"
+            disabled={loadingDelete}
+            startIcon={
+              loadingDelete ? (
+                <CircularProgress size={18} color="inherit" />
+              ) : null
+            }
+          >
+            {loadingDelete ? "Eliminando..." : "Eliminar"}
+          </Button>
         </DialogActions>
       </Dialog>
     </Grid>
