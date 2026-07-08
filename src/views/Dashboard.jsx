@@ -67,7 +67,7 @@ export default function Dashboard() {
   }, [safeClientes]);
 
   const ultimosClientes = useMemo(() => {
-    return [...safeClientes].slice(-5).reverse();
+    return safeClientes.slice(0, 5);
   }, [safeClientes]);
 
   const maxCiudad = useMemo(() => {
